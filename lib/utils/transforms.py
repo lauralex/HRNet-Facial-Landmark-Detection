@@ -9,7 +9,7 @@ import torch
 import scipy
 import scipy.misc
 import numpy as np
-
+from PIL import Image
 
 MATCHED_PARTS = {
     "300W": ([1, 17], [2, 16], [3, 15], [4, 14], [5, 13], [6, 12], [7, 11], [8, 10],
@@ -207,9 +207,10 @@ def crop(img, center, scale, output_size, rot=0):
 
     if not rot == 0:
         # Remove padding
-        new_img = scipy.misc.imrotate(new_img, rot)
+        import scipy.ndimage
+        new_img = scipy.ndimage.rotate(new_img, rot)
         new_img = new_img[pad:-pad, pad:-pad]
-    new_img = scipy.misc.imresize(new_img, output_size)
+    new_img = np.asarray(Image.fromarray(new_img, mode='RGB').resize(output_size))
     return new_img
 
 
